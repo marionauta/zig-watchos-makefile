@@ -1,3 +1,4 @@
+ZIG ?= zig
 ZIGFLAGS = -fcompiler-rt --zig-lib-dir ${HOME}/src/3rd/zig-master/lib
 
 .PHONY: all
@@ -27,9 +28,5 @@ root.aarch64.sim.o: root.zig
 root.aarch64.o: root.zig
 	zig build-obj ${ZIGFLAGS} --name root.aarch64 -target aarch64-watchos $^
 
-root.aarch64_32.bc: root.zig
-	zig build-obj ${ZIGFLAGS} --name root.aarch64_32 -femit-llvm-bc $^
-	@rm root.aarch64_32.o*
-
-root.aarch64_32.o: root.aarch64_32.bc
-	clang -c -o $@ -target aarch64_32-apple-watchos $^
+root.aarch64_32.o: root.zig
+	${ZIG} build-obj ${ZIGFLAGS} --name root.aarch64_32 -target aarch64-watchos-ilp32 $^
